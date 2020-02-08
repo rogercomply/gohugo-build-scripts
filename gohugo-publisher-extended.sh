@@ -33,45 +33,45 @@ ONION_V3_DIR=onionv3
 
 function prepare ()
 {
-	PUBLISH_DIR=$1
+    PUBLISH_DIR=$1
 
-	if [ -d "${CONTENT_DIR}" ]
-	then
-		if [ -d "${CONTENT_DIR}/${PUBLISH_DIR}" ]
-		then
-			rm -Rf ${CONTENT_DIR}/${PUBLISH_DIR}
-		fi
-	else
-		exit 1
-	fi
+    if [ -d "${CONTENT_DIR}" ]
+    then
+        if [ -d "${CONTENT_DIR}/${PUBLISH_DIR}" ]
+        then
+            rm -Rf ${CONTENT_DIR}/${PUBLISH_DIR}
+        fi
+    else
+        exit 1
+    fi
 }
 
 function clearnet_builder ()
 {
-	PUBLISH_DIR=$1
-	prepare $PUBLISH_DIR
+    PUBLISH_DIR=$1
+    prepare $PUBLISH_DIR
 
-	cd $CONTENT_DIR && \
-	$GOHUGO --destination=${CONTENT_DIR}/${PUBLISH_DIR}
-	sed -i "/<meta name=\"robots\" content=\"noindex,follow\"\/>/d" ${CONTENT_DIR}/${PUBLISH_DIR}/index.html
+    cd $CONTENT_DIR && \
+    $GOHUGO --destination=${CONTENT_DIR}/${PUBLISH_DIR}
+    sed -i "/<meta name=\"robots\" content=\"noindex,follow\"\/>/d" ${CONTENT_DIR}/${PUBLISH_DIR}/index.html
 
-	compress $PUBLISH_DIR
-	publish $PUBLISH_DIR
+    compress $PUBLISH_DIR
+    publish $PUBLISH_DIR
 }
 
 function onion_builder ()
 {
-	PUBLISH_DIR=$1
-	ONION_URI=$2
-	TITLE=$3
+    PUBLISH_DIR=$1
+    ONION_URI=$2
+    TITLE=$3
 
-	prepare $PUBLISH_DIR
+    prepare $PUBLISH_DIR
 
-	BLOG_URI_ESCAPED=(${BLOG_URI//./\\.})
-	BLOG_URI_ESCAPED=(${BLOG_URI_ESCAPED//\//\\/})
+    BLOG_URI_ESCAPED=(${BLOG_URI//./\\.})
+    BLOG_URI_ESCAPED=(${BLOG_URI_ESCAPED//\//\\/})
 
-	ONION_URI_ESCAPED=(${ONION_URI//./\\.})
-	ONION_URI_ESCAPED=(${ONION_URI_ESCAPED//\//\\/})
+    ONION_URI_ESCAPED=(${ONION_URI//./\\.})
+    ONION_URI_ESCAPED=(${ONION_URI_ESCAPED//\//\\/})
 
     cd $CONTENT_DIR && \
     HUGO_TITLE=${TITLE} \
@@ -80,35 +80,35 @@ function onion_builder ()
     HUGO_PARAMS_SHARE_TWITTER="false" \
     HUGO_PARAMS_SHARE_REDDIT="false" \
     HUGO_PARAMS_SHARE_LINKEDIN="false" \
-	$GOHUGO \
-	--destination=${CONTENT_DIR}/${PUBLISH_DIR} \
-	--baseURL=${ONION_URI}/ \
-	--disableKinds=sitemap,RSS
+    $GOHUGO \
+    --destination=${CONTENT_DIR}/${PUBLISH_DIR} \
+    --baseURL=${ONION_URI}/ \
+    --disableKinds=sitemap,RSS
 
-	rm -Rf ${CONTENT_DIR}/${PUBLISH_DIR}/${STATIC_DIR}
-	sed -i "/<meta name=\"robots\" content=\"noindex,follow\"\/>/d" ${CONTENT_DIR}/${PUBLISH_DIR}/index.html
-	sed -i "/<link rel=\"alternate\" type=\"application\/rss+xml\" href=\"\/index.xml\" title=\"${TITLE}\">/d" ${CONTENT_DIR}/${PUBLISH_DIR}/index.html
-	find ${CONTENT_DIR}/${PUBLISH_DIR} \( -name "*.html" -o -name "*.xml" -o -name "*.css" \) -exec sed -i "s/${BLOG_URI_ESCAPED}/${ONION_URI_ESCAPED}/gI" {} \;
+    rm -Rf ${CONTENT_DIR}/${PUBLISH_DIR}/${STATIC_DIR}
+    sed -i "/<meta name=\"robots\" content=\"noindex,follow\"\/>/d" ${CONTENT_DIR}/${PUBLISH_DIR}/index.html
+    sed -i "/<link rel=\"alternate\" type=\"application\/rss+xml\" href=\"\/index.xml\" title=\"${TITLE}\">/d" ${CONTENT_DIR}/${PUBLISH_DIR}/index.html
+    find ${CONTENT_DIR}/${PUBLISH_DIR} \( -name "*.html" -o -name "*.xml" -o -name "*.css" \) -exec sed -i "s/${BLOG_URI_ESCAPED}/${ONION_URI_ESCAPED}/gI" {} \;
 
-	compress $PUBLISH_DIR
-	publish $PUBLISH_DIR
+    compress $PUBLISH_DIR
+    publish $PUBLISH_DIR
 }
 
 function compress ()
 {
-	PUBLISH_DIR=$1
+    PUBLISH_DIR=$1
 
-	find ${CONTENT_DIR}/${PUBLISH_DIR} -name "*.html" -exec ${MINIFY} --html-keep-document-tags --html-keep-end-tags --html-keep-default-attrvals -o {} {} \;
-	find ${CONTENT_DIR}/${PUBLISH_DIR} -name "*.xml" -exec ${MINIFY} --xml-keep-whitespace --html-keep-document-tags --html-keep-end-tags --html-keep-default-attrvals -o {} {} \;
-	find ${CONTENT_DIR}/${PUBLISH_DIR} -name "*.css" -exec ${MINIFY} --type=css -o {} {} \;
-	find ${CONTENT_DIR}/${PUBLISH_DIR} -name "*.js" -exec ${MINIFY} --type=js -o {} {} \;
+    find ${CONTENT_DIR}/${PUBLISH_DIR} -name "*.html" -exec ${MINIFY} --html-keep-document-tags --html-keep-end-tags --html-keep-default-attrvals -o {} {} \;
+    find ${CONTENT_DIR}/${PUBLISH_DIR} -name "*.xml" -exec ${MINIFY} --xml-keep-whitespace --html-keep-document-tags --html-keep-end-tags --html-keep-default-attrvals -o {} {} \;
+    find ${CONTENT_DIR}/${PUBLISH_DIR} -name "*.css" -exec ${MINIFY} --type=css -o {} {} \;
+    find ${CONTENT_DIR}/${PUBLISH_DIR} -name "*.js" -exec ${MINIFY} --type=js -o {} {} \;
 }
 
 function publish ()
 {
-	PUBLISH_DIR=$1
+    PUBLISH_DIR=$1
 
-	rsync -azP --chown=${REMOTE_USER}:${REMOTE_GROUP} ${CONTENT_DIR}/${PUBLISH_DIR}/ ${SSH_USER}@${SSH_SERVER}:${REMOTE_DIR}/${PUBLISH_DIR}
+    rsync -azP --chown=${REMOTE_USER}:${REMOTE_GROUP} ${CONTENT_DIR}/${PUBLISH_DIR}/ ${SSH_USER}@${SSH_SERVER}:${REMOTE_DIR}/${PUBLISH_DIR}
 }
 
 clear
