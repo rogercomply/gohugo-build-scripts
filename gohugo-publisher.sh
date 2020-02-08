@@ -23,11 +23,11 @@ BLOG_URI=https://blog.paranoidpenguin.net
 BLOG_DIR=blog
 
 ONION_V2_TITLE=Slackiuxopmaoigo.onion
-ONION_V2_URI=http://lgy3mqgnwqoou46r.onion
+ONION_V2_URI=http://slackiuxopmaoigo.onion
 ONION_V2_DIR=onionv2
 
 ONION_V3_TITLE=Slackiuxopmaoigo.onion
-ONION_V3_URI=http://o7kg6jl67s27hyccioz3o7y6indb44kutpha4q3si7yl7bl32zrayhad.onion
+ONION_V3_URI=http://4hpfzoj3tgyp2w7sbe3gnmphqiqpxwwyijyvotamrvojl7pkra7z7byd.onion
 ONION_V3_DIR=onionv3
 
 function prepare ()
