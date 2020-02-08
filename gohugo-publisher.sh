@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 # A Hugo build and deploy script supporting onion domains.
+# Source: https://blog.paranoidpenguin.net/how-to-configure-hugo-as-a-tor-hidden-service/
 
 # Copyright 2020 ParanoidPenguin.net
 # This work is free. You can redistribute it and/or modify it under the
